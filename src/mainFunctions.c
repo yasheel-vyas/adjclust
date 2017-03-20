@@ -227,42 +227,21 @@ double pencil_C(int sense, int lim, int hLoc, int p, double *rcCumRight, double 
   return(sumPen);
 }
 
-double* distance_C(int mini, int maxi, int minj, int maxj, double *rcCumRight, double *rcCumLeft, int h, int p){
-  double *res = malloc(sizeof(double)*4);
-  double Sii, Sjj, Sij, D;
-  int ni, nj, mI, mJ, mIJ;
-
-  ni = maxi - mini + 1;
-  nj = maxj - minj + 1;
-  mI = ni - 1;
-  mJ = nj - 1;
-  mIJ = maxj - mini;
-
-  if ((ni==1) & (nj==1)){
-    Sii = 1;
-    Sjj = 1;
-  }
-  else if ((ni==1) & (nj>1)){
-    Sii = 1;
-    Sjj = 2*pencil_C(1, minj, MIN(h, mJ), p, rcCumRight, rcCumLeft) + 2*pencil_C(-1, maxj, MIN(h, mJ), p, rcCumRight, rcCumLeft) - 2*CUML(p, MIN(h, mJ), p)+ nj;
-  }
-  else if ((ni>1) & (nj==1)){
-    Sjj = 1;
-    Sii = 2*pencil_C(1, mini, MIN(h, mI), p, rcCumRight, rcCumLeft) + 2*pencil_C(-1, maxi, MIN(h, mI), p, rcCumRight, rcCumLeft) - 2*CUML(p, MIN(h, mI), p) + ni;
-  }
-  else {
-    Sii = 2*pencil_C(1, mini, MIN(h, mI), p, rcCumRight, rcCumLeft) + 2*pencil_C(-1, maxi, MIN(h, mI), p, rcCumRight, rcCumLeft) - 2*CUML(p, MIN(h, mI), p) + ni;
-    Sjj = 2*pencil_C(1, minj, MIN(h, mJ), p, rcCumRight, rcCumLeft) + 2*pencil_C(-1, maxj, MIN(h, mJ), p, rcCumRight, rcCumLeft) - 2*CUML(p, MIN(h, mJ), p) + nj;
-  }
-
-  Sij = pencil_C(-1, maxj, MIN(h, mIJ), p, rcCumRight, rcCumLeft) + pencil_C(1, mini, MIN(h, mIJ), p, rcCumRight, rcCumLeft) - CUML(p, MIN(h, mIJ), p) - (Sii-ni)/2 - (Sjj-nj)/2;
-
-  D =  (float)ni*nj/(ni+nj)  * ( (float)1/(ni*ni)*Sii + (float)1/(nj*nj)*Sjj - (float)2/(ni*nj)*Sij ) ;
-
-  res[0] = D;
-  res[1] = Sii;
-  res[2] = Sjj;
-  res[3] = Sij;
+double* distance_C(int mini, int maxi, int minj, int maxj,double* m, int h, int p){
+  
+	double res;
+	int i = 0;
+	res = INT_MAX;
+	
+	for(int i = 0; mini-1; i<maxi; i++)
+	{
+		for(int j = minj-i-2;(j<maxj-i-1)&&(j<h);j++)
+		{
+		if(m[(p*j)+i]<res)
+			res = m[(p*j)+i];
+		}
+	}
+	
 
   return res;
 }
